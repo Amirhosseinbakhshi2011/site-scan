@@ -1,0 +1,41 @@
+{
+  "report_meta": {
+    "generator": "Aegis Sentinel AI",
+    "generated_at": "2026-11-12T06:00:00+00:00",
+    "language": "fa",
+    "scan_id": 1,
+    "hostname": "example.com"
+  },
+  "summary": {
+    "overall_score": 82.5,
+    "status": "completed",
+    "started_at": "2026-11-12T05:58:00+00:00",
+    "finished_at": "2026-11-12T05:59:30+00:00",
+    "text": "امتیاز کلی: 82.5/100 | بحرانی: 0 | بالا: 1 | متوسط: 2 | پایین: 1 | اطلاعاتی: 8"
+  },
+  "findings": [
+    {
+      "id": 1,
+      "check_name": "ssl_tls",
+      "title": "گواهی SSL معتبر است",
+      "description": "گواهی تا Dec 2027 معتبر است.",
+      "risk_level": "informational",
+      "confidence": "confirmed",
+      "evidence": "notAfter=...",
+      "affected_url": "https://example.com/",
+      "remediation": null,
+      "cwe_id": null
+    },
+    {
+      "id": 2,
+      "check_name": "security_headers",
+      "title": "هدر Content-Security-Policy وجود ندارد",
+      "description": "سیاست امنیت محتوا (CSP) از حملات XSS و injection جلوگیری می‌کند.",
+      "risk_level": "medium",
+      "confidence": "confirmed",
+      "affected_url": "https://example.com/",
+      "remediation": "هدر Content-Security-Policy را با سیاست مناسب تنظیم کنید.",
+      "cwe_id": "CWE-1021"
+    }
+  ]
+}

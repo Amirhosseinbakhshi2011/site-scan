@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ app_name }} | داشبورد امنیتی</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: { 900: '#0a1628', 800: '#0f2137', 700: '#163050', 600: '#1e3a5f' },
+            accent: { green: '#10b981', red: '#ef4444', amber: '#f59e0b' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Vazirmatn', system-ui, sans-serif; }
+    .card { @apply bg-navy-800 border border-navy-600 rounded-xl shadow-lg; }
+  </style>
+</head>
+<body class="bg-navy-900 text-slate-100 min-h-screen">
+  <!-- Header -->
+  <header class="border-b border-navy-600 bg-navy-800/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center font-bold text-sm">AS</div>
+        <div>
+          <h1 class="text-lg font-semibold tracking-tight">{{ app_name }}</h1>
+          <p class="text-xs text-slate-400">ارزیابی امنیتی مجاز و غیرتخریبی</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="userBadge" class="text-sm text-slate-400 hidden">—</span>
+        <button id="logoutBtn" class="hidden text-sm px-3 py-1.5 rounded-lg bg-navy-700 hover:bg-navy-600">خروج</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <!-- Login Panel -->
+    <section id="loginPanel" class="max-w-md mx-auto mt-16 card p-8">
+      <h2 class="text-xl font-semibold mb-6 text-center">ورود به داشبورد</h2>
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-sm text-slate-400 mb-1">ایمیل</label>
+          <input type="email" id="email" required class="w-full px-3 py-2 rounded-lg bg-navy-900 border border-navy-600 focus:border-emerald-500 outline-none" value="admin@example.com" />
+        </div>
+        <div>
+          <label class="block text-sm text-slate-400 mb-1">رمز عبور</label>
+          <input type="password" id="password" required class="w-full px-3 py-2 rounded-lg bg-navy-900 border border-navy-600 focus:border-emerald-500 outline-none" value="ChangeMeImmediately123!" />
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 font-medium transition">ورود</button>
+        <p id="loginError" class="text-red-400 text-sm text-center hidden"></p>
+      </form>
+      <p class="text-xs text-slate-500 mt-4 text-center">کاربر پیش‌فرض از فایل .env ساخته می‌شود</p>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard" class="hidden space-y-6">
+      <!-- Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="card p-4">
+          <p class="text-slate-400 text-sm">دامنه‌های ثبت‌شده</p>
+          <p id="statDomains" class="text-2xl font-bold mt-1">0</p>
+        </div>
+        <div class="card p-4">
+          <p class="text-slate-400 text-sm">اسکن‌های اخیر</p>
+          <p id="statScans" class="text-2xl font-bold mt-1">0</p>
+        </div>
+        <div class="card p-4">
+          <p class="text-slate-400 text-sm">یافته‌های بحرانی/بالا</p>
+          <p id="statCritical" class="text-2xl font-bold mt-1 text-red-400">0</p>
+        </div>
+        <div class="card p-4">
+          <p class="text-slate-400 text-sm">میانگین امتیاز</p>
+          <p id="statScore" class="text-2xl font-bold mt-1 text-emerald-400">—</p>
+        </div>
+      </div>
+
+      <!-- Domains + Add -->
+      <div class="card p-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <h2 class="text-lg font-semibold">دامنه‌ها</h2>
+          <button id="btnAddDomain" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-sm font-medium">+ افزودن دامنه</button>
+        </div>
+        <div id="domainList" class="space-y-2 text-sm"></div>
+      </div>
+
+      <!-- Scans -->
+      <div class="card p-5">
+        <h2 class="text-lg font-semibold mb-4">تاریخچه اسکن</h2>
+        <div id="scanList" class="space-y-2 text-sm overflow-x-auto"></div>
+      </div>
+
+      <!-- Findings detail -->
+      <div id="findingsPanel" class="card p-5 hidden">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold">جزئیات یافته‌ها</h2>
+          <button onclick="document.getElementById('findingsPanel').classList.add('hidden')" class="text-slate-400 hover:text-white">بستن</button>
+        </div>
+        <div id="findingsList" class="space-y-3"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Add Domain Modal -->
+  <div id="modalAdd" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+    <div class="card p-6 w-full max-w-md mx-4">
+      <h3 class="text-lg font-semibold mb-4">افزودن دامنه جدید</h3>
+      <form id="addDomainForm" class="space-y-3">
+        <div>
+          <label class="text-sm text-slate-400">نام دامنه (مثال: example.com)</label>
+          <input id="newHostname" required class="w-full mt-1 px-3 py-2 rounded-lg bg-navy-900 border border-navy-600 outline-none focus:border-emerald-500" placeholder="example.com" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-400">نام نمایشی (اختیاری)</label>
+          <input id="newDisplay" class="w-full mt-1 px-3 py-2 rounded-lg bg-navy-900 border border-navy-600 outline-none" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="submit" class="flex-1 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500">ثبت</button>
+          <button type="button" id="cancelAdd" class="px-4 py-2 rounded-lg bg-navy-700">انصراف</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
